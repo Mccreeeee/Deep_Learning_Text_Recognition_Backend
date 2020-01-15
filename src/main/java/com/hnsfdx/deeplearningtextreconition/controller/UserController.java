@@ -21,14 +21,14 @@ public class UserController {
         return ResponseUtil.sucMsg();
     }
 
-    //  传入的infoMap中有loginName，loginPwd和userName三个key-value对
+    //  传入的infoMap中有loginName，loginPwd，userName和code四个key-value对
     @PostMapping(value = "/reg")
     public Map<String, Object> register(@RequestBody Map<String, String> infoMap) {
         Map<String, Object> returnMap;
-        boolean flag = userService.verifyNum(infoMap.get("loginName"), infoMap.get("code"));
+        boolean flag = userService.verifyNum(infoMap.get("loginName").toLowerCase(), infoMap.get("code"));
         if (flag) {
             User user = new User();
-            user.setLoginName(infoMap.get("loginName"));
+            user.setLoginName(infoMap.get("loginName").toLowerCase());
             user.setLoginPwd(infoMap.get("loginPwd"));
             user.setUserName(infoMap.get("userName"));
             Date date = new Date();
@@ -36,7 +36,7 @@ public class UserController {
             user.setRegisterTime(date);
             userService.saveUser(user);
             returnMap = ResponseUtil.sucMsg();
-            userService.sendRegSucMail(infoMap.get("loginName"), infoMap);
+//            userService.sendRegSucMail(infoMap.get("loginName"), infoMap);
         } else {
             returnMap = ResponseUtil.failMsg();
             returnMap.put("reason", "验证码校验有误，请重新输入！");
@@ -52,7 +52,20 @@ public class UserController {
             returnMap = ResponseUtil.sucMsg();
         } else {
             returnMap = ResponseUtil.failMsg();
-            returnMap.put("reason", "已存在的用户登陆名，请更换！");
+            returnMap.put("reason", "已存在的用户登陆名，请重新输入！");
+        }
+        return returnMap;
+    }
+
+    @PostMapping(value = "deleteUser")
+    public Map<String, Object> deleteUser(@RequestParam String loginName) {
+        Map<String, Object> returnMap;
+        boolean flag = userService.deleteUser(loginName);
+        if (flag) {
+            returnMap = ResponseUtil.sucMsg();
+        } else {
+            returnMap = ResponseUtil.failMsg();
+            returnMap.put("reason", "此用户已注销或不存在此用户，请重新输入！");
         }
         return returnMap;
     }

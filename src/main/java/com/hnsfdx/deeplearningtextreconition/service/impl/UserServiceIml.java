@@ -31,7 +31,7 @@ public class UserServiceIml implements UserService {
 
     @Override
     public boolean isValidLoginName(String loginName) {
-        User user = userRepository.findByLoginName(loginName);
+        User user = userRepository.findByLoginName(loginName.toLowerCase());
         if (user == null) {
             return true;
         } else {
@@ -42,6 +42,7 @@ public class UserServiceIml implements UserService {
     @Override
     public void sendRegCodeMail(String emailAddress) {
         String code;
+
         if (StringUtils.isEmpty(stringRedisTemplate.opsForValue().get(emailAddress.toLowerCase()))) {
             // redis中没有就生成一个验证码
             // 生成6位随机数作为验证码
@@ -112,7 +113,7 @@ public class UserServiceIml implements UserService {
                 "</table>" +
                 "</body>";
         stringRedisTemplate.opsForValue().set(emailAddress.toLowerCase(), code, 5, TimeUnit.MINUTES);
-        emailUtil.sendEmail(senderAddress, emailAddress, "图识TooSimple App 验证码通知", body);
+        emailUtil.sendEmail(senderAddress, emailAddress.toLowerCase(), "图识TooSimple App 验证码通知", body);
     }
 
     @Override
@@ -160,31 +161,30 @@ public class UserServiceIml implements UserService {
                 "        </tbody>" +
                 "    </table>" +
                 "</div>";
-        emailUtil.sendEmail(senderAddress, emailAddress, "图识TooSimple App 注册成功通知", body);
+        emailUtil.sendEmail(senderAddress, emailAddress.toLowerCase(), "图识TooSimple App 注册成功通知", body);
     }
 
     @Override
     public boolean verifyNum(String emailAddress, String verifyCode) {
         boolean flag = true;
-        String code = stringRedisTemplate.opsForValue().get(emailAddress);
-        if (!code.equals(verifyCode))
+        String code = stringRedisTemplate.opsForValue().get(emailAddress.toLowerCase());
+        if (!verifyCode.equals(code))
             flag = false;
         return flag;
     }
 
     @Override
     public boolean saveUser(User user) {
-        boolean flag = true;
-        return flag;
+        return userRepository.saveUser(user);
     }
 
     @Override
     public boolean updateUser(User user) {
-        return false;
+        return userRepository.updateUser(user);
     }
 
     @Override
     public boolean deleteUser(String loginName) {
-        return false;
+        return userRepository.deleteUser(loginName.toLowerCase());
     }
 }

@@ -11,7 +11,7 @@
         <result property="loginTime" column="login_time" jdbcType="TIMESTAMP" />
     </resultMap>
     <select id="findByLoginName" parameterType="String" resultMap="userResultMap">
-        select * from user where login_name = #{loginName}
+        select * from users where login_name = #{loginName}
     </select>
 
     <insert id="saveUser" parameterType="com.hnsfdx.deeplearningtextreconition.pojo.User">
