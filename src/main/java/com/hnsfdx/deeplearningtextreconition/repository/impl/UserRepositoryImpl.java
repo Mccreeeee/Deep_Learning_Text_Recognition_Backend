@@ -14,4 +14,20 @@ public class UserRepositoryImpl implements UserRepository {
     public User findByLoginName(String loginName) {
         return userMapper.findByLoginName(loginName);
     }
+
+    @Override
+    public boolean saveUser(User user) {
+        return userMapper.saveUser(user);
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        return userMapper.updateUser(user);
+    }
+
+    @Override
+    public boolean deleteUser(String loginName) {
+        return userMapper.deleteUser(loginName);
+    }
+
 }

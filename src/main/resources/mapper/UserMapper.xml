@@ -2,12 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hnsfdx.deeplearningtextreconition.mapper.UserMapper">
     <resultMap id="userResultMap" type="com.hnsfdx.deeplearningtextreconition.pojo.User">
-        <result property="id" column="id" jdbcType="INTEGER" />
-        <result property="loginName" column="login_name" jdbcType="VARCHAR " />
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="loginName" column="login_name" jdbcType="VARCHAR" />
         <result property="loginPwd" column="login_pwd" jdbcType="VARCHAR" />
         <result property="userName" column="user_name" jdbcType="VARCHAR" />
+        <result property="userAvatar" column="user_navatar" jdbcType="VARCHAR" />
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP" />
+        <result property="loginTime" column="login_time" jdbcType="TIMESTAMP" />
     </resultMap>
     <select id="findByLoginName" parameterType="String" resultMap="userResultMap">
         select * from user where login_name = #{loginName}
     </select>
+
+    <insert id="saveUser" parameterType="com.hnsfdx.deeplearningtextreconition.pojo.User">
+        insert into users (login_name, login_pwd, user_name, user_avatar, register_time, login_time)
+        values (#{loginName}, #{loginPwd}, #{userName}, #{userAvatar}, #{registerTime}, #{loginTime})
+    </insert>
+
+    <delete id="deleteUser" parameterType="String">
+         delete from users where login_name = #{loginName}
+    </delete>
+
+    <update id="updateUser" parameterType="com.hnsfdx.deeplearningtextreconition.pojo.User">
+        UPDATE users
+        <set>
+            <choose>
+                <when test="loginPwd != null">login_pwd = #{loginPwd}, </when>
+                <when test="userName != null">user_name = #{userName}, </when>
+                <when test="userAvatar != null">user_avatar = #{userAvatar}, </when>
+                <when test="registerTime != null">register_time = #{registerTime}, </when>
+                <when test="loginTime != null">login_time = #{loginTime}, </when>
+            </choose>
+        </set>
+        WHERE login_name = #{loginName}
+    </update>
 </mapper>

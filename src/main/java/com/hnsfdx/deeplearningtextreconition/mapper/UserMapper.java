@@ -7,5 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper {
     User findByLoginName(String loginName);
     boolean saveUser(User user);
-    User updateUser(User user);
+    boolean updateUser(User user);
+    boolean deleteUser(String loginName);
 }
