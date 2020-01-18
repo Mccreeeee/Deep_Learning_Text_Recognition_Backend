@@ -26,13 +26,11 @@
     <update id="updateUser" parameterType="com.hnsfdx.deeplearningtextreconition.pojo.User">
         UPDATE users
         <set>
-            <choose>
-                <when test="loginPwd != null">login_pwd = #{loginPwd}, </when>
-                <when test="userName != null">user_name = #{userName}, </when>
-                <when test="userAvatar != null">user_avatar = #{userAvatar}, </when>
-                <when test="registerTime != null">register_time = #{registerTime}, </when>
-                <when test="loginTime != null">login_time = #{loginTime}, </when>
-            </choose>
+                <if test="loginPwd != null">login_pwd = #{loginPwd}, </if>
+                <if test="userName != null">user_name = #{userName}, </if>
+                <if test="userAvatar != null">user_avatar = #{userAvatar}, </if>
+                <if test="registerTime != null">register_time = #{registerTime}, </if>
+                <if test="loginTime != null">login_time = #{loginTime}, </if>
         </set>
         WHERE login_name = #{loginName}
     </update>
