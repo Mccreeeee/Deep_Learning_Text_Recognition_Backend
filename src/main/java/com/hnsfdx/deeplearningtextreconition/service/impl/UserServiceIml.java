@@ -141,7 +141,7 @@ public class UserServiceIml implements UserService {
                 "                        </font>" +
                 "                    </h2>" +
                 "                    <p>欢迎您成为图识TooSimple App的一员！下面是您的账号信息<br>" +
-                "                        您的账号：<b>" + userInfoMap.get("loginName") + "</b><br>" +
+                "                        您的账号：<b>" + userInfoMap.get("loginName").toLowerCase() + "</b><br>" +
                 "                        您的密码：<b>" + userInfoMap.get("loginPwd") + "</b><br>" +
                 "                        您的昵称：<b>" + userInfoMap.get("userName") + "</b><br>" +
                 "                        您注册时的日期：<b>" + nowTime + "</b><br>" +

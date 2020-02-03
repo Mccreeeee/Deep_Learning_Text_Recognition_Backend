@@ -36,7 +36,7 @@ public class UserController {
             user.setRegisterTime(date);
             userService.saveUser(user);
             returnMap = ResponseUtil.sucMsg();
-//            userService.sendRegSucMail(infoMap.get("loginName"), infoMap);
+            userService.sendRegSucMail(infoMap.get("loginName"), infoMap);
         } else {
             returnMap = ResponseUtil.failMsg();
             returnMap.put("reason", "验证码校验有误，请重新输入！");
