@@ -187,4 +187,9 @@ public class UserServiceIml implements UserService {
     public boolean deleteUser(String loginName) {
         return userRepository.deleteUser(loginName.toLowerCase());
     }
+
+    @Override
+    public User verifyUser(Map<String, String> loginMap) {
+        return userRepository.findLoginUser(loginMap);
+    }
 }

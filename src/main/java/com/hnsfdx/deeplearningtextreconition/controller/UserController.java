@@ -2,7 +2,10 @@ package com.hnsfdx.deeplearningtextreconition.controller;
 
 import com.hnsfdx.deeplearningtextreconition.pojo.User;
 import com.hnsfdx.deeplearningtextreconition.service.UserService;
+import com.hnsfdx.deeplearningtextreconition.util.EmailUtil;
 import com.hnsfdx.deeplearningtextreconition.util.ResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -21,7 +25,8 @@ public class UserController {
         return ResponseUtil.sucMsg();
     }
 
-    //  传入的infoMap中有loginName，loginPwd，userName和code四个key-value对
+    //传入的infoMap中有loginName，loginPwd，userName和code四个key-value对
+    //因为注册时间和登陆时间需要以server端为准，所以传入map
     @PostMapping(value = "/reg")
     public Map<String, Object> register(@RequestBody Map<String, String> infoMap) {
         Map<String, Object> returnMap;
@@ -44,7 +49,7 @@ public class UserController {
         return returnMap;
     }
 
-    @PostMapping(value = "verifyLoginName")
+    @PostMapping(value = "/verifyLoginName")
     public Map<String, Object> verifyLoginName(@RequestParam String loginName) {
         Map<String, Object> returnMap;
         boolean flag = userService.isValidLoginName(loginName);
@@ -57,7 +62,7 @@ public class UserController {
         return returnMap;
     }
 
-    @PostMapping(value = "deleteUser")
+    @PostMapping(value = "/deleteUser")
     public Map<String, Object> deleteUser(@RequestParam String loginName) {
         Map<String, Object> returnMap;
         boolean flag = userService.deleteUser(loginName);
@@ -66,6 +71,34 @@ public class UserController {
         } else {
             returnMap = ResponseUtil.failMsg();
             returnMap.put("reason", "此用户已注销或不存在此用户，请重新输入！");
+        }
+        return returnMap;
+    }
+
+    @PostMapping(value = "/updateUser")
+    public Map<String, Object> updateUser(@RequestBody User updatedUser) {
+        Map<String, Object> returnMap;
+        boolean flag = userService.updateUser(updatedUser);
+        if (flag) {
+            returnMap = ResponseUtil.sucMsg();
+        } else {
+            returnMap = ResponseUtil.failMsg();
+            returnMap.put("reason", "更新用户数据失败，请稍后再试！");
+        }
+        return returnMap;
+    }
+
+    // loginMap中存放登陆所需的信息，loginName以及loginPwd
+    @PostMapping(value = "/login")
+    public Map<String, Object> login(@RequestBody Map<String, String> loginMap) {
+        Map<String, Object> returnMap;
+        User user = userService.verifyUser(loginMap);
+        if (user != null) {
+            returnMap = ResponseUtil.sucMsg();
+            returnMap.put("data", user);
+        } else {
+            returnMap = ResponseUtil.failMsg();
+            returnMap.put("reason", "账户或密码输入错误，请重新尝试！");
         }
         return returnMap;
     }

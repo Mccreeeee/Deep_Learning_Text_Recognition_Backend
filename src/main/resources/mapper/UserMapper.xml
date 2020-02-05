@@ -34,4 +34,8 @@
         </set>
         WHERE login_name = #{loginName}
     </update>
+
+    <select id="findLoginUser" parameterType="Map" resultType="userResultMap">
+        select * from users where login_name = #{loginName} and login_pwd = #{loginPwd}
+    </select>
 </mapper>

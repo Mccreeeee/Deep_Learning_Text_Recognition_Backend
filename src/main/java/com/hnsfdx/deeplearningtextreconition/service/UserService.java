@@ -27,4 +27,6 @@ public interface UserService {
     //删除用户
     boolean deleteUser(String loginName);
 
+    //验证登陆用户是否存在于数据库
+    User verifyUser(Map<String, String> loginMap);
 }
