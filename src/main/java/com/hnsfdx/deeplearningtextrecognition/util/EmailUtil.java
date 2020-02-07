@@ -1,4 +1,4 @@
-package com.hnsfdx.deeplearningtextreconition.util;
+package com.hnsfdx.deeplearningtextrecognition.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

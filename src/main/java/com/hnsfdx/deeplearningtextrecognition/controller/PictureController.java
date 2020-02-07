@@ -1,4 +1,4 @@
-package com.hnsfdx.deeplearningtextreconition.controller;
+package com.hnsfdx.deeplearningtextrecognition.controller;
 
 import org.springframework.stereotype.Service;
 

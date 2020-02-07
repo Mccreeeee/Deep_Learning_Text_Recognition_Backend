@@ -1,4 +1,4 @@
-package com.hnsfdx.deeplearningtextreconition.util;
+package com.hnsfdx.deeplearningtextrecognition.util;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,10 +13,10 @@ public class FileUtil {
     // 返回在服务器端的相对路径
     public static String uploadToServer(String relativePath, MultipartFile multipartFile) {
         if ("".equals(relativePath) || relativePath == null) {
-            throw new ArgsIntroduceException();
+//            throw new ArgsIntroduceException();
         }
         if (multipartFile.isEmpty() || multipartFile == null) {
-            throw new StorageException();
+//            throw new StorageException();
         }
         String fileName = multipartFile.getOriginalFilename();
         File dir = new File(BASE_DIR + relativePath);
@@ -30,18 +30,19 @@ public class FileUtil {
             multipartFile.transferTo(file);
             return (BASE_URL + relativePath + fileName);
         } catch (IOException e) {
-            throw new StorageException();
+//            throw new StorageException();
         }
+        return "";
     }
 
     // 删除文件夹相对路径（暂定为reviewerId + xxxId）下的所有图片文件，可能会出现一些异常，到时候统一在controller层捕捉转换
     public static void deleteInServer(String relativePath) {
         if ("".equals(relativePath) || relativePath == null) {
-            throw new ArgsIntroduceException();
+//            throw new ArgsIntroduceException();
         }
         File file = new File(BASE_DIR + relativePath);
         if (!file.isDirectory()) {
-            throw new ArgsIntroduceException();
+//            throw new ArgsIntroduceException();
         }
         File[] listFiles = file.listFiles();
         if (listFiles != null && listFiles.length != 0) {

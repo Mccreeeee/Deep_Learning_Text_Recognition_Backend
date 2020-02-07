@@ -1,6 +1,6 @@
-package com.hnsfdx.deeplearningtextreconition.repository;
+package com.hnsfdx.deeplearningtextrecognition.repository;
 
-import com.hnsfdx.deeplearningtextreconition.pojo.User;
+import com.hnsfdx.deeplearningtextrecognition.pojo.User;
 
 import java.util.Map;
 

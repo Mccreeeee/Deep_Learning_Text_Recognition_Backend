@@ -1,6 +1,6 @@
-package com.hnsfdx.deeplearningtextreconition.mapper;
+package com.hnsfdx.deeplearningtextrecognition.mapper;
 
-import com.hnsfdx.deeplearningtextreconition.pojo.User;
+import com.hnsfdx.deeplearningtextrecognition.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Map;

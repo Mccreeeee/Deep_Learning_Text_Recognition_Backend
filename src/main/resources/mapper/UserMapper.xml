@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hnsfdx.deeplearningtextreconition.mapper.UserMapper">
-    <resultMap id="userResultMap" type="com.hnsfdx.deeplearningtextreconition.pojo.User">
+<mapper namespace="com.hnsfdx.deeplearningtextrecognition.mapper.UserMapper">
+    <resultMap id="userResultMap" type="com.hnsfdx.deeplearningtextrecognition.pojo.User">
         <id property="id" column="id" jdbcType="INTEGER" />
         <result property="loginName" column="login_name" jdbcType="VARCHAR" />
         <result property="loginPwd" column="login_pwd" jdbcType="VARCHAR" />
@@ -14,28 +14,27 @@
         select * from users where login_name = #{loginName}
     </select>
 
-    <insert id="saveUser" parameterType="com.hnsfdx.deeplearningtextreconition.pojo.User">
+    <insert id="saveUser" parameterType="com.hnsfdx.deeplearningtextrecognition.pojo.User">
         insert into users (login_name, login_pwd, user_name, user_avatar, register_time, login_time)
-        values (#{loginName}, #{loginPwd}, #{userName}, #{userAvatar}, #{registerTime}, #{loginTime})
+        values (#{loginName}, MD5(#{loginPwd}), #{userName}, #{userAvatar}, #{registerTime}, #{loginTime})
     </insert>
 
     <delete id="deleteUser" parameterType="String">
          delete from users where login_name = #{loginName}
     </delete>
 
-    <update id="updateUser" parameterType="com.hnsfdx.deeplearningtextreconition.pojo.User">
+    <update id="updateUser" parameterType="com.hnsfdx.deeplearningtextrecognition.pojo.User">
         UPDATE users
         <set>
-                <if test="loginPwd != null">login_pwd = #{loginPwd}, </if>
+                <if test="loginPwd != null">login_pwd = MD5(#{loginPwd}), </if>
                 <if test="userName != null">user_name = #{userName}, </if>
                 <if test="userAvatar != null">user_avatar = #{userAvatar}, </if>
-                <if test="registerTime != null">register_time = #{registerTime}, </if>
                 <if test="loginTime != null">login_time = #{loginTime}, </if>
         </set>
         WHERE login_name = #{loginName}
     </update>
 
-    <select id="findLoginUser" parameterType="Map" resultType="userResultMap">
-        select * from users where login_name = #{loginName} and login_pwd = #{loginPwd}
+    <select id="findLoginUser" parameterType="Map" resultMap="userResultMap">
+        select login_name, user_name, user_avatar, register_time, login_time from users where login_name = #{loginName} and login_pwd = MD5(#{loginPwd})
     </select>
 </mapper>

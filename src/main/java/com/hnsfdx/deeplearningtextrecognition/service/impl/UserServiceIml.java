@@ -1,9 +1,9 @@
-package com.hnsfdx.deeplearningtextreconition.service.impl;
+package com.hnsfdx.deeplearningtextrecognition.service.impl;
 
-import com.hnsfdx.deeplearningtextreconition.pojo.User;
-import com.hnsfdx.deeplearningtextreconition.repository.UserRepository;
-import com.hnsfdx.deeplearningtextreconition.service.UserService;
-import com.hnsfdx.deeplearningtextreconition.util.EmailUtil;
+import com.hnsfdx.deeplearningtextrecognition.pojo.User;
+import com.hnsfdx.deeplearningtextrecognition.repository.UserRepository;
+import com.hnsfdx.deeplearningtextrecognition.service.UserService;
+import com.hnsfdx.deeplearningtextrecognition.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;

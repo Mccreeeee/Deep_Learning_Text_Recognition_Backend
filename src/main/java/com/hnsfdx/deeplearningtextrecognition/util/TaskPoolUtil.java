@@ -1,4 +1,4 @@
-package com.hnsfdx.deeplearningtextreconition.util;
+package com.hnsfdx.deeplearningtextrecognition.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

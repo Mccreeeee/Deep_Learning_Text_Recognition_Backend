@@ -1,4 +1,4 @@
-package com.hnsfdx.deeplearningtextreconition.util;
+package com.hnsfdx.deeplearningtextrecognition.util;
 
 import java.util.HashMap;
 import java.util.Map;

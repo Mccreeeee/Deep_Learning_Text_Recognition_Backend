@@ -1,8 +1,8 @@
-package com.hnsfdx.deeplearningtextreconition.repository.impl;
+package com.hnsfdx.deeplearningtextrecognition.repository.impl;
 
-import com.hnsfdx.deeplearningtextreconition.mapper.UserMapper;
-import com.hnsfdx.deeplearningtextreconition.pojo.User;
-import com.hnsfdx.deeplearningtextreconition.repository.UserRepository;
+import com.hnsfdx.deeplearningtextrecognition.mapper.UserMapper;
+import com.hnsfdx.deeplearningtextrecognition.pojo.User;
+import com.hnsfdx.deeplearningtextrecognition.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
