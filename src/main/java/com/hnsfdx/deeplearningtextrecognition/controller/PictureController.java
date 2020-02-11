@@ -138,7 +138,10 @@ public class PictureController {
     }
 
     @ApiOperation(value = "上传同步所有图片", notes = "用于上传同步所有图片的图片信息", httpMethod = "POST")
-    @ApiImplicitParam(name = "loginName", value = "用户的登录名", required = true, dataType = "String")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loginName", value = "用户的登录名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "pictureList", value = "所有本地客户端的图片信息数据", required = true, dataType = "List")
+    })
     @ApiResponses({
             @ApiResponse(code = 200, message = "success", response = WebResponse.class),
     })
