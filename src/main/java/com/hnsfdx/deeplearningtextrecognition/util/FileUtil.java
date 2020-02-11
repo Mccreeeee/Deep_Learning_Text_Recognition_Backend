@@ -1,22 +1,26 @@
 package com.hnsfdx.deeplearningtextrecognition.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 
 public class FileUtil {
-    private static final String BASE_DIR = "temp/images/";
-    private static final String BASE_URL = "https://hslife.me/resources/";
-
-    // 相对路径（暂定为reviewerId + xxxId） + 文件名用于存储，可能会出现一些异常，到时候统一在controller层捕捉转换
+    public static final String BASE_DIR = "temp/images/";
+    public static final String BASE_URL = "http://localhost:8080/resources/";
+    private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
+    // 相对路径（暂定为User_loginName） + 文件名用于存储，可能会出现一些错误，错误时用logger记录
     // 返回在服务器端的相对路径
     public static String uploadToServer(String relativePath, MultipartFile multipartFile) {
         if ("".equals(relativePath) || relativePath == null) {
-//            throw new ArgsIntroduceException();
+            logger.error("上传的相对路径为空或为null！");
+            return null;
         }
         if (multipartFile.isEmpty() || multipartFile == null) {
-//            throw new StorageException();
+            logger.error("上传的文件为空或为null，请检查！");
+            return null;
         }
         String fileName = multipartFile.getOriginalFilename();
         File dir = new File(BASE_DIR + relativePath);
@@ -28,21 +32,21 @@ public class FileUtil {
         try {
             file.createNewFile();
             multipartFile.transferTo(file);
-            return (BASE_URL + relativePath + fileName);
+            return (BASE_URL + relativePath + "/" + fileName);
         } catch (IOException e) {
-//            throw new StorageException();
+            logger.error("创建文件错误！", e.getMessage());
         }
-        return "";
+        return null;
     }
 
-    // 删除文件夹相对路径（暂定为reviewerId + xxxId）下的所有图片文件，可能会出现一些异常，到时候统一在controller层捕捉转换
-    public static void deleteInServer(String relativePath) {
+    // 删除文件夹相对路径（暂定为User_loginName）下的所有图片文件，可能会出现一些错误，错误时用logger记录
+    public static void deleteAllInServer(String relativePath) {
         if ("".equals(relativePath) || relativePath == null) {
-//            throw new ArgsIntroduceException();
+            logger.error("删除的相对路径为空或为null！");
         }
         File file = new File(BASE_DIR + relativePath);
         if (!file.isDirectory()) {
-//            throw new ArgsIntroduceException();
+            logger.error("删除的相对路径不是文件夹");
         }
         File[] listFiles = file.listFiles();
         if (listFiles != null && listFiles.length != 0) {
@@ -51,4 +55,14 @@ public class FileUtil {
             }
         }
     }
+    // 删除相对路径（暂定为User_loginName）下的单个图片文件
+    public static void deleteSingleInServer(String relativePath, String fileName) {
+        if ("".equals(relativePath) || relativePath == null) {
+            logger.error("删除的相对路径为空或为null！");
+        }
+        File dir = new File(BASE_DIR + relativePath);
+        File file = new File(dir.getAbsoluteFile(), fileName);
+        file.delete();
+    }
+
 }

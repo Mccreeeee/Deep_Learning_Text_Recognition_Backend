@@ -4,11 +4,13 @@ import com.hnsfdx.deeplearningtextrecognition.pojo.User;
 import com.hnsfdx.deeplearningtextrecognition.repository.UserRepository;
 import com.hnsfdx.deeplearningtextrecognition.service.UserService;
 import com.hnsfdx.deeplearningtextrecognition.util.EmailUtil;
+import com.hnsfdx.deeplearningtextrecognition.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserServiceIml implements UserService {
+public class UserServiceImpl implements UserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -192,4 +194,5 @@ public class UserServiceIml implements UserService {
     public User verifyUser(Map<String, String> loginMap) {
         return userRepository.findLoginUser(loginMap);
     }
+
 }

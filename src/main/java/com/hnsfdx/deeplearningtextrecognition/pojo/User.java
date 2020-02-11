@@ -8,7 +8,7 @@ import java.util.Date;
 @ApiModel(value = "User对象", description = "User对象的数据")
 public class User {
     //主键ID
-    @ApiModelProperty(name = "id", value = "用户在数据库的主键id（更新时不需要填充此字段）", example = "1")
+    @ApiModelProperty(name = "id", value = "用户在数据库的主键id（更新时不需要填充此字段），可能会被用作请求体调用服务", example = "1")
     private Integer id;
     //登录账户名
     @ApiModelProperty(name = "loginName", value = "用户的登录名（更新时不需要填充此字段）", example = "123456@qq.com")
@@ -83,5 +83,18 @@ public class User {
 
     public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", loginName='" + loginName + '\'' +
+                ", loginPwd='" + loginPwd + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userAvatar='" + userAvatar + '\'' +
+                ", registerTime=" + registerTime +
+                ", loginTime=" + loginTime +
+                '}';
     }
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hnsfdx.deeplearningtextrecognition.mapper.PictureMapper">
+    <resultMap id="picResultMap" type="com.hnsfdx.deeplearningtextrecognition.pojo.Picture">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
+        <result property="pictureUrl" column="picture_url" jdbcType="VARCHAR"/>
+        <result property="pictureType" column="picture_type" jdbcType="TINYINT"/>
+        <result property="uploadTime" column="upload_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="savePicture" parameterType="com.hnsfdx.deeplearningtextrecognition.pojo.Picture">
+        insert into pictures (login_name, picture_name, picture_url, picture_data, picture_type, upload_time)
+        values (#{loginName}, #{pictureName}, #{pictureUrl}, #{pictureData}, #{pictureType}, #{uploadTime})
+    </insert>
+
+    <insert id="savePictureList" parameterType="java.util.List">
+        insert into pictures (login_name, picture_name, picture_url, picture_data, picture_type, upload_time)
+        values
+        <foreach collection="pictureList" item="item" separator=",">
+            (#{item.loginName}, #{item.pictureName}, #{item.pictureUrl}, #{item.pictureData}, #{item.pictureType}, #{item.uploadTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteSinglePicture" parameterType="Integer">
+        delete from pictures where id = #{id}
+    </delete>
+
+    <delete id="deleteAllPictures" parameterType="String">
+        delete from pictures where login_name = #{loginName}
+    </delete>
+
+    <update id="updatePicture" parameterType="com.hnsfdx.deeplearningtextrecognition.pojo.Picture">
+        update pictures
+        <set>
+            <if test="picture_name != null">picture_name = #{pictureName}</if>
+            <if test="picture_data != null">picture_data = #{pictureData}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="findSingleById" parameterType="Integer" resultMap="picResultMap">
+        select * from pictures where id = #{id}
+    </select>
+
+    <select id="findAllByLoginName" parameterType="String" resultMap="picResultMap">
+        select * from pictures where login_name = #{loginName} order by upload_time desc
+    </select>
+</mapper>
