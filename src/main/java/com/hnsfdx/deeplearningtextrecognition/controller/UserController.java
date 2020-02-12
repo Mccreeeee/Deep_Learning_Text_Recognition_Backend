@@ -27,10 +27,6 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
-@Autowired
-private PictureService pictureService;
-@Autowired
-private ScheduleUtil scheduleUtil;
     @PostMapping(value = "/genVerifyNum")
     @ApiOperation(value = "生成验证码", notes = "用于生成验证码并发送相应验证码邮件的api", tags = "User", httpMethod = "POST")
     @ApiImplicitParam(name = "loginName", value = "注册时使用的登录名", required = true, dataType = "String")
@@ -194,7 +190,5 @@ private ScheduleUtil scheduleUtil;
     public void test(@RequestParam Integer id) {
 //        String relativePath = "User_" + loginName.replaceAll("@|\\.", "_") + "_Avatar";
 //        FileUtil.deleteSingleInServer(relativePath, "20kb小照.jpg");
-        scheduleUtil.scheduledClearImg();
-
     }
 }
