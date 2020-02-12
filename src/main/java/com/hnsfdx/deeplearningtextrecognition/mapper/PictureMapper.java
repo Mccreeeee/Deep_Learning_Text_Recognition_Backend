@@ -21,4 +21,6 @@ public interface PictureMapper {
     Picture findSingleById(@Param(value = "id") Integer id);
 
     boolean savePictureList(@Param(value = "pictureList") List<Picture> pictureList);
+
+    List<String> findAllImgUrl();
 }

@@ -19,4 +19,7 @@ public interface PictureRepository {
     Picture findSingleById(Integer id);
 
     boolean savePictureList(List<Picture> pictureList);
+
+    List<String> findAllImgUrl();
+
 }

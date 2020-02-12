@@ -57,8 +57,10 @@ public class PictureController {
         // 此处考虑相对路径
         String relativePath = "User_" + loginName.replaceAll("@|\\.", "_") + "_Img";
         String fileName = file.getOriginalFilename();
+
         // 图片在本地的位置，供调用python用
         String localLocation = FileUtil.BASE_DIR + relativePath + "/" + fileName;
+
         Picture picture = pictureService.getSingleById(id);
         String resultData = "";
         if (picture == null) {

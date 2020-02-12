@@ -11,6 +11,7 @@ public class FileUtil {
     public static final String BASE_DIR = "temp/images/";
     public static final String BASE_URL = "http://localhost:8080/resources/";
     private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
+
     // 相对路径（暂定为User_loginName） + 文件名用于存储，可能会出现一些错误，错误时用logger记录
     // 返回在服务器端的相对路径
     public static String uploadToServer(String relativePath, MultipartFile multipartFile) {
@@ -55,6 +56,7 @@ public class FileUtil {
             }
         }
     }
+
     // 删除相对路径（暂定为User_loginName）下的单个图片文件
     public static void deleteSingleInServer(String relativePath, String fileName) {
         if ("".equals(relativePath) || relativePath == null) {
@@ -65,4 +67,16 @@ public class FileUtil {
         file.delete();
     }
 
+    // 分割获得Url里的相对路径
+    public static String getRelativePath(String url) {
+        String res = url.substring(0, url.lastIndexOf("/"));
+        res = res.substring(res.lastIndexOf("/") + 1);
+        return res;
+    }
+
+    // 分割获得Url里的本地文件名
+    public static String getLocalFileName(String url) {
+        String res = url.substring(url.lastIndexOf("/") + 1);
+        return res;
+    }
 }

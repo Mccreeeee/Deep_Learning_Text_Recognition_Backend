@@ -46,4 +46,8 @@
     <select id="findAllByLoginName" parameterType="String" resultMap="picResultMap">
         select * from pictures where login_name = #{loginName} order by upload_time desc
     </select>
+
+    <select id="findAllImgUrl" resultType="String">
+        select picture_url from pictures
+    </select>
 </mapper>

@@ -14,4 +14,5 @@ public interface PictureService {
     boolean deleteAllByLoginName(String loginName);
     boolean deleteSingleById(Integer id);
     boolean savePictureList(List<Picture> pictureList);
+    List<String> getAllImgUrl();
 }

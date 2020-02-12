@@ -6,6 +6,7 @@ import com.hnsfdx.deeplearningtextrecognition.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -36,6 +37,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findLoginUser(Map<String, String> loginMap) {
         return userMapper.findLoginUser(loginMap);
+    }
+
+    @Override
+    public List<String> findAllAvatarUrl() {
+        return userMapper.findAllAvatarUrl();
     }
 
 }

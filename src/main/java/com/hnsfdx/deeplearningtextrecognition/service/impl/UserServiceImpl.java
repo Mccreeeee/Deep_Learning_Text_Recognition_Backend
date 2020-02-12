@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -193,6 +194,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User verifyUser(Map<String, String> loginMap) {
         return userRepository.findLoginUser(loginMap);
+    }
+
+    @Override
+    public List<String> getAllAvatarUrl() {
+        return userRepository.findAllAvatarUrl();
     }
 
 }

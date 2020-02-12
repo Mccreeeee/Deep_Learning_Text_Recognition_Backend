@@ -2,6 +2,7 @@ package com.hnsfdx.deeplearningtextrecognition.controller;
 
 import com.hnsfdx.deeplearningtextrecognition.pojo.Picture;
 import com.hnsfdx.deeplearningtextrecognition.pojo.User;
+import com.hnsfdx.deeplearningtextrecognition.schedule.ScheduleUtil;
 import com.hnsfdx.deeplearningtextrecognition.service.PictureService;
 import com.hnsfdx.deeplearningtextrecognition.service.UserService;
 import com.hnsfdx.deeplearningtextrecognition.swagger.ApiJsonObject;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Api(value = "用户服务控制器", tags = "User")
@@ -26,6 +29,8 @@ public class UserController {
     private UserService userService;
 @Autowired
 private PictureService pictureService;
+@Autowired
+private ScheduleUtil scheduleUtil;
     @PostMapping(value = "/genVerifyNum")
     @ApiOperation(value = "生成验证码", notes = "用于生成验证码并发送相应验证码邮件的api", tags = "User", httpMethod = "POST")
     @ApiImplicitParam(name = "loginName", value = "注册时使用的登录名", required = true, dataType = "String")
@@ -186,13 +191,10 @@ private PictureService pictureService;
 
 
     @GetMapping(value = "/testdel")
-    public String test(@RequestParam String loginName) {
+    public void test(@RequestParam Integer id) {
 //        String relativePath = "User_" + loginName.replaceAll("@|\\.", "_") + "_Avatar";
 //        FileUtil.deleteSingleInServer(relativePath, "20kb小照.jpg");
-        Picture picture = pictureService.getSingleById(null);
-        if (picture == null) {
-            return "null";
-        }
-        return "picture";
+        scheduleUtil.scheduledClearImg();
+
     }
 }

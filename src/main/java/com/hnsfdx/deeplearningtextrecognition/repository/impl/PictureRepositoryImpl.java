@@ -47,4 +47,9 @@ public class PictureRepositoryImpl implements PictureRepository {
     public boolean savePictureList(List<Picture> pictureList) {
         return pictureMapper.savePictureList(pictureList);
     }
+
+    @Override
+    public List<String> findAllImgUrl() {
+        return pictureMapper.findAllImgUrl();
+    }
 }

@@ -50,4 +50,9 @@ public class PictureServiceImpl implements PictureService {
     public boolean savePictureList(List<Picture> pictureList) {
         return pictureRepository.savePictureList(pictureList);
     }
+
+    @Override
+    public List<String> getAllImgUrl() {
+        return pictureRepository.findAllImgUrl();
+    }
 }

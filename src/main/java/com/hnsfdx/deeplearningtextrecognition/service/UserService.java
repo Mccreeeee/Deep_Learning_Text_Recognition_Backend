@@ -1,8 +1,8 @@
 package com.hnsfdx.deeplearningtextrecognition.service;
 
 import com.hnsfdx.deeplearningtextrecognition.pojo.User;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -31,4 +31,5 @@ public interface UserService {
     //验证登陆用户是否存在于数据库
     User verifyUser(Map<String, String> loginMap);
 
+    List<String> getAllAvatarUrl();
 }

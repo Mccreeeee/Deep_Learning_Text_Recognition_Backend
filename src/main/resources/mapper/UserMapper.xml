@@ -39,4 +39,8 @@
         from users
         where login_name = #{loginName} and login_pwd = MD5(#{loginPwd})
     </select>
+
+    <select id="findAllAvatarUrl" resultType="String">
+        select user_avatar from users
+    </select>
 </mapper>
