@@ -79,4 +79,9 @@ public class FileUtil {
         String res = url.substring(url.lastIndexOf("/") + 1);
         return res;
     }
+
+    public static String getLocalLocation(String relativeLocation) {
+        File file = new File(relativeLocation);
+        return file.getAbsolutePath();
+    }
 }

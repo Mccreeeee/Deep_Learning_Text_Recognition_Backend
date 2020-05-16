@@ -49,7 +49,7 @@ public class PictureController {
     @PostMapping(value = "/uploadImg")
     public Map<String, Object> uploadAndSave(@RequestParam(value = "loginName") String loginName,
                                              @RequestParam(value = "pictureType") Integer pictureType,
-                                             @RequestParam(value = "id") Integer id,
+                                             @RequestParam(value = "id", required = false) Integer id,
                                              @RequestParam(value = "file") MultipartFile file) {
         Map<String, Object> returnMap;
         boolean flag;
@@ -59,7 +59,8 @@ public class PictureController {
         String fileName = file.getOriginalFilename();
 
         // 图片在本地的位置，供调用python用
-        String localLocation = FileUtil.BASE_DIR + relativePath + "/" + fileName;
+        String localRelativeLoc = FileUtil.BASE_DIR + relativePath + "/" + fileName;
+        String localLocation = FileUtil.getLocalLocation(localRelativeLoc);
 
         Picture picture = pictureService.getSingleById(id);
         String resultData = "";
@@ -100,18 +101,18 @@ public class PictureController {
         return returnMap;
     }
 
-//    @ApiOperation(value = "获得一张图片", notes = "用于获得对应图片id的一张图片信息", httpMethod = "GET")
-//    @ApiImplicitParam(name = "id", value = "需要获得图片信息的图片id", required = true, dataType = "Integer")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "success", response = WebDataResponse.class),
-//    })
-//    @GetMapping(value = "/getOne")
-//    public Map<String, Object> getSinglePic(@RequestParam(value = "id") Integer id) {
-//        Picture picture = pictureService.getSingleById(id);
-//        Map<String, Object> returnMap = ResponseUtil.sucMsg();
-//        returnMap.put("data", picture);
-//        return returnMap;
-//    }
+    @ApiOperation(value = "获得一张图片", notes = "用于获得对应图片id的一张图片信息", httpMethod = "GET")
+    @ApiImplicitParam(name = "id", value = "需要获得图片信息的图片id", required = true, dataType = "Integer")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "success", response = WebDataResponse.class),
+    })
+    @GetMapping(value = "/getOne")
+    public Map<String, Object> getSinglePic(@RequestParam(value = "id") Integer id) {
+        Picture picture = pictureService.getSingleById(id);
+        Map<String, Object> returnMap = ResponseUtil.sucMsg();
+        returnMap.put("data", picture);
+        return returnMap;
+    }
 
     @ApiOperation(value = "删掉一张图片", notes = "用于删除对应图片的图片信息", httpMethod = "POST")
     @ApiImplicitParam(name = "id", value = "需要获得图片信息的图片id", required = true, dataType = "Integer")

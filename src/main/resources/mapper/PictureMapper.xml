@@ -4,7 +4,9 @@
     <resultMap id="picResultMap" type="com.hnsfdx.deeplearningtextrecognition.pojo.Picture">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
+        <result property="pictureName" column="picture_name" jdbcType="VARCHAR"/>
         <result property="pictureUrl" column="picture_url" jdbcType="VARCHAR"/>
+        <result property="pictureData" column="picture_data" jdbcType="VARCHAR"/>
         <result property="pictureType" column="picture_type" jdbcType="TINYINT"/>
         <result property="uploadTime" column="upload_time" jdbcType="TIMESTAMP"/>
     </resultMap>
