@@ -5,9 +5,11 @@ import com.hnsfdx.deeplearningtextrecognition.service.PictureService;
 import com.hnsfdx.deeplearningtextrecognition.swagger.WebDataResponse;
 import com.hnsfdx.deeplearningtextrecognition.swagger.WebResponse;
 import com.hnsfdx.deeplearningtextrecognition.util.FileUtil;
+import com.hnsfdx.deeplearningtextrecognition.util.RecogUtil;
 import com.hnsfdx.deeplearningtextrecognition.util.ResponseUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +24,6 @@ public class PictureController {
     @Autowired
     private PictureService pictureService;
 
-
     @ApiOperation(value = "获得所有图片", notes = "用于获得对应loginName的用户的所有照片信息", httpMethod = "GET")
     @ApiImplicitParam(name = "loginName", value = "需要获得所有照片的用户名", required = true, dataType = "String")
     @ApiResponses({
@@ -36,9 +37,9 @@ public class PictureController {
         return returnMap;
     }
 
-    @ApiOperation(value = "上传保存图片", notes = "用于上传图片并保存信息至数据库", tags = "User", httpMethod = "POST")
+    @ApiOperation(value = "上传保存图片并识别，通识版", notes = "用于上传图片并保存信息至数据库", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "loginName", value = "用户的登录名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "loginName", value = "用户的登录名", dataType = "String"),
             @ApiImplicitParam(name = "pictureType", value = "上传的图片的类型，用于不同类型的识别，例如0是自然场景图片，1是pdf图片等", required = true, dataType = "Integer"),
             @ApiImplicitParam(name = "id", value = "上传图片的id（如果为null，则说明是第一次上传）", dataType = "Integer"),
             @ApiImplicitParam(name = "file", value = "上传的头像图片", required = true, dataType = "MutipartFile")
@@ -47,15 +48,21 @@ public class PictureController {
             @ApiResponse(code = 200, message = "success", response = WebDataResponse.class),
     })
     @PostMapping(value = "/uploadImg")
-    public Map<String, Object> uploadAndSave(@RequestParam(value = "loginName") String loginName,
+    public Map<String, Object> uploadAndSave(@RequestParam(value = "loginName", required = false) String loginName,
                                              @RequestParam(value = "pictureType") Integer pictureType,
                                              @RequestParam(value = "id", required = false) Integer id,
                                              @RequestParam(value = "file") MultipartFile file) {
         Map<String, Object> returnMap;
-        boolean flag;
+        boolean flag = false;
         // 判断是否存储过，存储过的话只需要重新识别内容，并更新数据库即可
         // 此处考虑相对路径
-        String relativePath = "User_" + loginName.replaceAll("@|\\.", "_") + "_Img";
+        String midFix;
+        if (!StringUtils.isEmpty(loginName)) {
+            midFix = loginName.replaceAll("@|\\.", "_");
+        } else {
+            midFix = "UnLoginUser";
+        }
+        String relativePath = "User_" + midFix + "_Img";
         String fileName = file.getOriginalFilename();
 
         // 图片在本地的位置，供调用python用
@@ -67,11 +74,8 @@ public class PictureController {
         if (picture == null) {
             picture = new Picture();
             String pictureUrl = FileUtil.uploadToServer(relativePath, file);
-            // 此处调用python进行不同type的识别并setPictureData
-
-
-            resultData = "?";
-
+            // 此处调用python进行识别并setPictureData
+            resultData = RecogUtil.getResultFromPyScript(localLocation);
             // 需要判断是否有保存过，没有才保存至数据库，并返回
             picture.setPictureData(resultData);
             picture.setPictureName(fileName);
@@ -80,16 +84,20 @@ public class PictureController {
             picture.setPictureUrl(pictureUrl);
             Date date = new Date();
             picture.setUploadTime(date);
-            flag = pictureService.savePicture(picture);
+            // 登陆了，才保存记录
+            if (!StringUtils.isEmpty(loginName)) {
+                flag = pictureService.savePicture(picture);
+            }
         } else {
-            // 此处调用python进行不同type的识别并setPictureData
-
-
-            resultData = "?";
+            // 此处调用python进行识别并setPictureData
+            resultData = RecogUtil.getResultFromPyScript(localLocation);
             picture.setPictureData(resultData);
-            flag = pictureService.updatePictureData(picture);
+            // 登录了，才更新记录
+            if (!StringUtils.isEmpty(loginName)) {
+                flag = pictureService.updatePictureData(picture);
+            }
         }
-        if (flag) {
+        if (StringUtils.isEmpty(loginName) || flag) {
             returnMap = ResponseUtil.sucMsg();
             returnMap.put("data", picture);
         } else {
@@ -97,6 +105,46 @@ public class PictureController {
 //            FileUtil.deleteSingleInServer(relativePath, fileName);
             returnMap = ResponseUtil.failMsg();
             returnMap.put("reason", "图片上传或识别失败，请重新尝试！");
+        }
+        return returnMap;
+    }
+
+    @ApiOperation(value = "同步保存图片，OCR版", notes = "用于上传图片并保存信息至数据库", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loginName", value = "用户的登录名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "pictureType", value = "同步的图片的类型，用于不同类型的识别，例如0是自然场景图片，1是pdf图片等", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "pictureData", value = "同步图片的识别内容", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "file", value = "需要同步的图片", required = true, dataType = "MutipartFile")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "success/fail，fail时的data表示同步保存失败的图片数据", response = WebDataResponse.class),
+    })
+    @PostMapping(value = "/synOneOCR")
+    public Map<String, Object> synOneOCR(@RequestParam(value = "loginName") String loginName,
+                                         @RequestParam(value = "pictureType") Integer pictureType,
+                                         @RequestParam(value = "pictureData") String pictureData,
+                                         @RequestParam(value = "file") MultipartFile file) {
+        Map<String, Object> returnMap;
+        // 判断是否存储过，存储过的话只需要重新识别内容，并更新数据库即可
+        // 此处考虑相对路径
+        String relativePath = "User_" + loginName.replaceAll("@|\\.", "_") + "_Img";
+        String fileName = file.getOriginalFilename();
+        Picture picture = new Picture();
+        String pictureUrl = FileUtil.uploadToServer(relativePath, file);
+        picture.setPictureName(fileName);
+        picture.setPictureData(pictureData);
+        picture.setLoginName(loginName);
+        picture.setPictureType(pictureType);
+        picture.setPictureUrl(pictureUrl);
+        Date date = new Date();
+        picture.setUploadTime(date);
+        boolean flag = pictureService.savePicture(picture);
+        if (flag) {
+            returnMap = ResponseUtil.sucMsg();
+        } else {
+            returnMap = ResponseUtil.failMsg();
+            returnMap.put("reason", "图片同步失败，请稍后重新尝试！");
+            returnMap.put("data", picture);
         }
         return returnMap;
     }
@@ -142,28 +190,32 @@ public class PictureController {
 
     @ApiOperation(value = "上传同步所有图片", notes = "用于上传同步所有图片的图片信息", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "loginName", value = "用户的登录名", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pictureList", value = "所有本地客户端的图片信息数据", required = true, dataType = "List")
     })
     @ApiResponses({
             @ApiResponse(code = 200, message = "success", response = WebResponse.class),
     })
     @PostMapping(value = "/synAll")
-    public Map<String, Object> synAllPic(@RequestParam(value = "loginName") String loginName,
-                                         @RequestParam(value = "pictureList") List<Picture> pictureList) {
+    public Map<String, Object> synAllPic(@RequestBody List<Picture> pictureList) {
         Map<String, Object> returnMap;
-        boolean flag = pictureService.deleteAllByLoginName(loginName);
-        if (!flag) {
-            returnMap = ResponseUtil.failMsg();
-            returnMap.put("reason", "云端删除所有图片数据失败，请重新尝试！");
-            return returnMap;
-        }
-        flag = pictureService.savePictureList(pictureList);
-        if (flag) {
-            returnMap = ResponseUtil.sucMsg();
+        if (pictureList != null && pictureList.size() != 0) {
+            String loginName = pictureList.get(0).getLoginName();
+            boolean flag = pictureService.deleteAllByLoginName(loginName);
+            if (!flag) {
+                returnMap = ResponseUtil.failMsg();
+                returnMap.put("reason", "云端删除所有图片数据失败，请重新尝试！");
+                return returnMap;
+            }
+            flag = pictureService.savePictureList(pictureList);
+            if (flag) {
+                returnMap = ResponseUtil.sucMsg();
+            } else {
+                returnMap = ResponseUtil.failMsg();
+                returnMap.put("reason", "云端保存所有图片数据失败，请重新尝试！");
+            }
         } else {
             returnMap = ResponseUtil.failMsg();
-            returnMap.put("reason", "云端保存所有图片数据失败，请重新尝试！");
+            returnMap.put("reason", "同步失败，请检查请求参数是否有误！");
         }
         return returnMap;
     }

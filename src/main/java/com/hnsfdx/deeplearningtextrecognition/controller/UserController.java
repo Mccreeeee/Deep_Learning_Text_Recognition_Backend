@@ -1,9 +1,6 @@
 package com.hnsfdx.deeplearningtextrecognition.controller;
 
-import com.hnsfdx.deeplearningtextrecognition.pojo.Picture;
 import com.hnsfdx.deeplearningtextrecognition.pojo.User;
-import com.hnsfdx.deeplearningtextrecognition.schedule.ScheduleUtil;
-import com.hnsfdx.deeplearningtextrecognition.service.PictureService;
 import com.hnsfdx.deeplearningtextrecognition.service.UserService;
 import com.hnsfdx.deeplearningtextrecognition.swagger.ApiJsonObject;
 import com.hnsfdx.deeplearningtextrecognition.swagger.ApiJsonProperty;
@@ -16,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Api(value = "用户服务控制器", tags = "User")
